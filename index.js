@@ -81,7 +81,7 @@ io.on("connection", (socket) => {
 
   if (roomId) {
     socket.leave(roomId);
-     socket.to(roomId).emit("user-left");////////////////
+     socket.to(roomId).emit("user-left")////////////////
     socketToRoomMapping.delete(socket.id);
   }
 
