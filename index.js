@@ -29,6 +29,8 @@ const io = new Server(server, {
 
 const emailToSocketMapping = new Map()
 const socketToEmailMapping = new Map()
+const socketToRoomMapping = new Map();////////////////
+
 
 io.on("connection", (socket) => {
   console.log("New Connection")
@@ -47,6 +49,7 @@ io.on("connection", (socket) => {
     socketToEmailMapping.set(socket.id, email)
 
     socket.join(room_id)
+    socketToRoomMapping.set(socket.id, room_id)//////////////////
 
     socket.emit("joined-room", { room_id, email })
 
@@ -72,16 +75,23 @@ io.on("connection", (socket) => {
       socket.to(socketId).emit("call-accepted", { ans });
     }
   })
+///////////////////////////////////////////////////////////////////////////////
+  socket.on("leave_room", () => {
+  const roomId = socketToRoomMapping.get(socket.id);
 
-  socket.on("disconnect", () => {
-    const email = socketToEmailMapping.get(socket.id);
+  if (roomId) {
+    socket.leave(roomId);
+    socketToRoomMapping.delete(socket.id);
+  }
 
-    if (email) {
-      emailToSocketMapping.delete(email);
-    }
+  const email = socketToEmailMapping.get(socket.id);
 
-    socketToEmailMapping.delete(socket.id);
-  })
+  if (email) {
+    emailToSocketMapping.delete(email);
+  }
+
+  socketToEmailMapping.delete(socket.id);
+});/////////////////////////////////////////////////////////////////////////
 })
 
 const PORT = process.env.PORT || 8000;
