@@ -10,6 +10,7 @@ app.use(bodyParser.json())
 app.use(cors({origin: [
     "http://localhost:5173",
     "https://vedio-call-peach.vercel.app",
+    "https://vediocall.memohit.space"
   ],
   credentials: true,
 }));
@@ -21,6 +22,7 @@ const io = new Server(server, {
     origin: [
       "http://localhost:5173",
       "https://vedio-call-peach.vercel.app",
+      "https://vediocall.memohit.space"
     ],
     methods: ["GET", "POST"],
     credentials: true,
