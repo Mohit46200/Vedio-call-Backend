@@ -78,22 +78,46 @@ io.on("connection", (socket) => {
     }
   })
 ///////////////////////////////////////////////////////////////////////////////
-  socket.on("leave_room", () => {
+//   socket.on("leave_room", () => {
+//   const roomId = socketToRoomMapping.get(socket.id);
+
+//   if (roomId) {
+//     socket.leave(roomId);
+//     socketToRoomMapping.delete(socket.id);
+//   }
+
+//   const email = socketToEmailMapping.get(socket.id);
+
+//   if (email) {
+//     emailToSocketMapping.delete(email);
+//   }
+
+//   socketToEmailMapping.delete(socket.id);
+// });
+// 
+socket.on("leave_room", () => {
   const roomId = socketToRoomMapping.get(socket.id);
+  const email = socketToEmailMapping.get(socket.id);
+
+  console.log("Leaving:", email, "room:", roomId);
 
   if (roomId) {
+    socket.to(roomId).emit("user-left", {
+      email,
+    });
+
     socket.leave(roomId);
+
     socketToRoomMapping.delete(socket.id);
   }
-
-  const email = socketToEmailMapping.get(socket.id);
 
   if (email) {
     emailToSocketMapping.delete(email);
   }
 
   socketToEmailMapping.delete(socket.id);
-});/////////////////////////////////////////////////////////////////////////
+});
+// /////////////////////////////////////////////////////////////////////////
 })
 
 const PORT = process.env.PORT || 8000;
